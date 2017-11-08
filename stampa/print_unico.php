@@ -1,17 +1,19 @@
 <?php
 
-/* 
-http://html2pdf.fr/it/default
-v 4.03
+/* ====   skipass   ==== */
 
-libreria per invio file
-http://swiftmailer.org/
-v 5.0.3
-*/
+require_once(dirname(__FILE__).'/db_config.php');
+require_once(dirname(__FILE__).'/vendor/autoload.php');
 
+$transport = (new Swift_SmtpTransport('10.0.0.3', 25));
+$mailer = new Swift_Mailer($transport);
+
+/*
 require_once(dirname(__FILE__).'/db_config.php');
 require_once(dirname(__FILE__).'/lib/html2pdf.class.php');
 require_once(dirname(__FILE__).'/lib/swift/lib/swift_required.php');
+*/
+
 
 // controllo se la funzione e' richiesta dalla pagina di gestione
 if (isset($_GET["gestione"]))  {
@@ -42,8 +44,6 @@ include ("./include/check_login.php");
 include ("./include/check_table.php");
 // fine files di dadabik 
 
-$transport = Swift_MailTransport::newInstance();
-$mailer = Swift_Mailer::newInstance($transport);
 
 $today = getdate();
 $today['mday'] = date('d');
