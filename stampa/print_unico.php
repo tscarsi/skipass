@@ -2,18 +2,15 @@
 
 /* ====   skipass   ==== */
 
+
+/* ====   stagione in corso   ==== */
+$stagione = '2017/18';
+
 require_once(dirname(__FILE__).'/db_config.php');
 require_once(dirname(__FILE__).'/vendor/autoload.php');
 
 $transport = (new Swift_SmtpTransport('10.0.0.3', 25));
 $mailer = new Swift_Mailer($transport);
-
-/*
-require_once(dirname(__FILE__).'/db_config.php');
-require_once(dirname(__FILE__).'/lib/html2pdf.class.php');
-require_once(dirname(__FILE__).'/lib/swift/lib/swift_required.php');
-*/
-
 
 // controllo se la funzione e' richiesta dalla pagina di gestione
 if (isset($_GET["gestione"]))  {
@@ -55,7 +52,6 @@ $oggi = $today['mday']."/".$today['mon']."/".$today['year'];
 $visualizza_prezzo = (int)$_GET["visualizza_prezzo"];
 
 
-
 if (isset($_GET["debug"]))  {
 	$debug = 1;
 }
@@ -66,7 +62,7 @@ if (isset($_GET["debug"]))  {
 */
 
 // togliere il commento per forzare il debug
-//$debug = 1;
+$debug = 1;
 
 $email_debug = array(
   "tomaso@tarvisiano.org",
@@ -90,7 +86,7 @@ switch ($tabella) {
 
     $query = "
     SELECT 
-    id_voucher, n_voucher, opzione_voucher, operatore,
+    id_voucher, n_voucher, stagione, opzione_voucher, operatore,
     titolo, nome_cliente, indirizzo_cliente, email_cliente, telefono_cliente,
     data_arrivo, data_partenza, data_inserimento, data_emissione,
     testo_mail, testo_mail_cliente, allegato_mail,
@@ -134,10 +130,11 @@ if ($myrow["n_voucher"])  {
     $numero_voucher = $myrow["n_voucher"];
 } else {
     $numero_voucher = $id_voucher;
-    $result1 = $db->query("SELECT MAX(n_voucher) AS numero FROM voucher");
+//  $result1 = $db->query("SELECT MAX(n_voucher) AS numero FROM voucher");
+	$result1 = $db->query("SELECT count(*) AS numero FROM `voucher` WHERE stagione='$stagione'");
     $myrow1 = $result1->fetch_array(MYSQLI_ASSOC);
     $numero_voucher = $myrow1["numero"] + 1;
-    $result2 = $db->query("UPDATE voucher set n_voucher='$numero_voucher' where id_voucher ='$id_voucher'");
+    $result2 = $db->query("UPDATE voucher set n_voucher='$numero_voucher', stagione='$stagione' where id_voucher ='$id_voucher'");
 }
 
     $email_mittente = $myrow["email_hotel"];
