@@ -2,12 +2,13 @@
 
 /* ====   skipass   ==== */
 
-
 /* ====   stagione in corso   ==== */
 $stagione = '2017/18';
 
 require_once(dirname(__FILE__).'/db_config.php');
-require_once(dirname(__FILE__).'/vendor/autoload.php');
+require_once('/var/www/vendor/autoload.php');
+
+use Spipu\Html2Pdf\Html2Pdf;
 
 $transport = (new Swift_SmtpTransport('10.0.0.3', 25));
 $mailer = new Swift_Mailer($transport);
@@ -174,7 +175,8 @@ if ( $invia_mail == 0 )  {
 }
 
 if ( $invia_mail > 0 )  {
-	$content_PDF = $html2pdf->Output('', 'S');
+//	$content_PDF = $html2pdf->Output('', 'S');
+$content_PDF = $html2pdf->Output($nome_file, 'S');
 }
 
 // attesa 3 secondi per rimediare il problema dei pdf danneggiati
